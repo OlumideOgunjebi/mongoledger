@@ -1,0 +1,96 @@
+# ============================================================================
+# COMP.8157 Advanced Database Topics, Fall 2026, University of Windsor
+# Team # 3: A Change Stream Ledger for MongoDB
+# Repository: github.com/OlumideOgunjebi/mongoledger
+# File:    .github/workflows/tests.yml
+# Owner:   Yadu Pratap (deployment lead)
+# Purpose: continuous integration: unit tests and live replica set tests on
+#          every push
+# Covers:  NFR11, NFR12; acceptance test AC16 (see docs/D.4.1)
+# ============================================================================
+
+# Continuous integration on GitHub Actions.
+#
+# unit:        the unit tests against the in memory stand in (no database needed)
+# live-mongo:  a real MongoDB 8.0 single node replica set in Docker, then the
+#              integration tests, the two minute demo and a short SmallBank run.
+#              The demo output and results/summary.csv are kept as a run artifact.
+#
+# Numbers from a hosted runner are useful as a first live check, not as final
+# benchmark results; the final experiments run on one fixed laptop.
+
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[bench,test]"
+      - run: python -m pytest -q tests --ignore=tests/integration
+
+  live-mongo:
+    runs-on: ubuntu-latest
+    needs: unit
+    env:
+      MONGO_URI: mongodb://localhost:27017/?replicaSet=rs0&directConnection=true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[bench,test]"
+
+      - name: Start MongoDB 8.0 as a single node replica set
+        run: |
+          docker run -d --name mongo -p 27017:27017 mongo:8.0 --replSet rs0 --bind_ip_all
+          for i in $(seq 1 30); do
+            docker exec mongo mongosh --quiet --eval "db.adminCommand('ping').ok" && break
+            sleep 2
+          done
+          docker exec mongo mongosh --quiet --eval \
+            "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]})"
+          for i in $(seq 1 30); do
+            state=$(docker exec mongo mongosh --quiet --eval "rs.status().myState" || true)
+            [ "$state" = "1" ] && echo "primary ready" && break
+            sleep 2
+          done
+          docker exec mongo mongosh --quiet --eval "db.version()"
+
+      - name: Integration tests on the live replica set
+        run: python -m pytest -v tests/integration
+
+      - name: Two minute demo (clean run and three attacks)
+        run: |
+          mkdir -p results
+          python demo.py | tee results/demo_output.txt
+
+      - name: Short SmallBank comparison (one repeat, first look only)
+        run: |
+          python -m bench.run --target mongo-plain mongo-a mongo-s \
+            --clients 4 --seconds 20 --warmup 5 --repeats 1 --customers 10000 --interval 2
+          python -m bench.plot || true
+
+      - name: Short sample_analytics comparison (one repeat, first look only)
+        run: |
+          python -m bench.run --workload analytics --target mongo-a mongo-s \
+            --clients 4 --seconds 15 --warmup 5 --repeats 1 --interval 2
+          python -m bench.plot --workload analytics || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-results
+          path: |
+            results/demo_output.txt
+            results/summary.csv
+            results/*.png
+          if-no-files-found: ignore
