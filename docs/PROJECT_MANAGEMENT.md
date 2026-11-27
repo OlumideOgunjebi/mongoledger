@@ -42,7 +42,7 @@ current status.
 | T14 | SQL Server 2022 Ledger baseline | Nelluri | T10 | In progress |
 | T15 | YCSB workloads A and B on MongoDB and SQL Server | Pratap | T10, T14 | Remaining |
 | T16 | Measurement campaign: 1 to 32 clients, head and interval sweeps, five repeats | Pratap, Nelluri | T10, T14, T15 | Remaining |
-| T17 | Source committed by component, pull requests, release tag v1.0.0 | All | T13 | In progress |
+| T17 | Source committed by component, protected main branch, release tag v1.0.0 | All | T13 | In progress |
 | T18 | Final D.4.3, D.4.4, D.4.5 and the final report D.5 | All | T16, T17 | Remaining |
 | T19 | In class presentation (D.6) | All | T18 | Remaining |
 
@@ -80,8 +80,9 @@ T15, T16 and T18.
 
 ## 5. Version control and change control
 
-Each component is committed by the member who owns it, on a branch, through a pull request that
-another member reviews before it is merged into `main`; the continuous integration workflow
+Each component is committed separately, with a message that names the member who owns it and the
+requirements it implements. The main branch is protected, so later changes go through a pull
+request that another member approves; the continuous integration workflow
 (`.github/workflows/tests.yml`) runs the unit tests, the live replica set tests and the demonstration
 on every push. Commit messages describe the work they contain. The delivered version is tagged
 `v1.0.0`. Changes to scope are recorded as requirements: the sample_analytics workload and the
