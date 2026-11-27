@@ -1,0 +1,39 @@
+// ===========================================================================
+// COMP.8157 Advanced Database Topics, Fall 2026, University of Windsor
+// Team # 3: A Change Stream Ledger for MongoDB
+// Repository: github.com/OlumideOgunjebi/mongoledger
+// File:    .devcontainer/devcontainer.json
+// Owner:   Yadu Pratap (deployment lead)
+// Purpose: GitHub Codespaces definition: run the project in the browser
+//          without installation
+// Covers:  NFR09, NFR10 (see docs/D.4.1)
+// ===========================================================================
+
+// GitHub Codespaces / VS Code Dev Containers definition.
+// Opening the repository in a codespace starts MongoDB 8.0 as a single node
+// replica set next to a Python 3.12 workspace and installs the project, so a
+// grader can run `python demo.py` or `mongoledger verify --design A` with no
+// local installation. The app container shares the mongo container's network,
+// so the default connection string (localhost:27017) works unchanged.
+{
+  "name": "Change stream ledger for MongoDB",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "pip install --user -e '.[bench,test]' && cp -n .env.example .env || true",
+  "postAttachCommand": "echo 'Ready: run  python demo.py  or  python -m pytest tests'",
+  "remoteEnv": {
+    "MONGO_URI": "mongodb://localhost:27017/?replicaSet=rs0&directConnection=true",
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "mongodb.mongodb-vscode"]
+    },
+    "codespaces": {
+      "openFiles": ["README.md"]
+    }
+  },
+  "hostRequirements": { "cpus": 2, "memory": "4gb" }
+}
