@@ -1,0 +1,132 @@
+{
+  "$comment": "Logical schema of every MongoDB collection the project uses, written as MongoDB $jsonSchema validators. MongoDB does not require a schema; these documents describe what the code writes and can be applied with db.runCommand({collMod: <name>, validator: {$jsonSchema: <schema>}, validationLevel: 'moderate'}). See schema/README.md.",
+  "bank.accounts": {
+    "$comment": "SmallBank: one document per customer, balances in cents (workloads/smallbank.py).",
+    "bsonType": "object",
+    "required": ["_id", "name", "savings", "checking"],
+    "properties": {
+      "_id": {"bsonType": ["int", "long"], "description": "customer number, 0 to N minus 1"},
+      "name": {"bsonType": "string", "description": "cust0000042 style name"},
+      "savings": {"bsonType": ["int", "long"], "description": "savings balance in cents"},
+      "checking": {"bsonType": ["int", "long"], "description": "checking balance in cents"}
+    }
+  },
+  "analytics.accounts": {
+    "$comment": "MongoDB sample_analytics accounts.",
+    "bsonType": "object",
+    "required": ["_id", "account_id", "limit", "products"],
+    "properties": {
+      "_id": {"bsonType": "objectId"},
+      "account_id": {"bsonType": "int", "description": "business key, referenced by customers.accounts and transactions.account_id"},
+      "limit": {"bsonType": ["int", "long"], "description": "credit limit"},
+      "products": {"bsonType": "array", "items": {"bsonType": "string"}}
+    }
+  },
+  "analytics.customers": {
+    "$comment": "MongoDB sample_analytics customers (fictitious people).",
+    "bsonType": "object",
+    "required": ["_id", "username", "name", "accounts"],
+    "properties": {
+      "_id": {"bsonType": "objectId"},
+      "username": {"bsonType": "string"},
+      "name": {"bsonType": "string"},
+      "address": {"bsonType": "string"},
+      "birthdate": {"bsonType": "date"},
+      "email": {"bsonType": "string"},
+      "active": {"bsonType": "bool"},
+      "accounts": {"bsonType": "array", "items": {"bsonType": "int"}, "description": "account_id values owned"},
+      "tier_and_details": {"bsonType": "object"}
+    }
+  },
+  "analytics.transactions": {
+    "$comment": "Bucket pattern: up to 100 trades of one account per document.",
+    "bsonType": "object",
+    "required": ["_id", "account_id", "transaction_count", "bucket_start_date", "bucket_end_date", "transactions"],
+    "properties": {
+      "_id": {"bsonType": "objectId"},
+      "account_id": {"bsonType": "int"},
+      "transaction_count": {"bsonType": "int", "maximum": 100},
+      "bucket_start_date": {"bsonType": "date"},
+      "bucket_end_date": {"bsonType": "date"},
+      "transactions": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object",
+          "required": ["date", "amount", "transaction_code", "symbol", "price", "total"],
+          "properties": {
+            "date": {"bsonType": "date"},
+            "amount": {"bsonType": "int"},
+            "transaction_code": {"enum": ["buy", "sell"]},
+            "symbol": {"bsonType": "string"},
+            "price": {"bsonType": "string", "description": "decimal kept as text, as in the original dataset"},
+            "total": {"bsonType": "string"}
+          }
+        }
+      }
+    }
+  },
+  "ledger_a.blocks": {
+    "$comment": "Sealed blocks (ledger/model.py Block). Same shape in ledger_s.blocks. Unique index on block_id.",
+    "bsonType": "object",
+    "required": ["block_id", "prev_hash", "kind", "root", "txn_count", "entry_count", "created_at", "block_hash"],
+    "properties": {
+      "block_id": {"bsonType": ["int", "long"], "minimum": 0},
+      "prev_hash": {"bsonType": "string", "pattern": "^[0-9a-f]{64}$"},
+      "kind": {"enum": ["data", "gap"]},
+      "root": {"bsonType": "string", "pattern": "^[0-9a-f]{64}$", "description": "RFC 9162 root over transaction roots"},
+      "txn_count": {"bsonType": ["int", "long"]},
+      "entry_count": {"bsonType": ["int", "long"]},
+      "created_at": {"bsonType": "double", "description": "epoch seconds when sealed"},
+      "first_ts": {"bsonType": ["array", "null"], "description": "[seconds, increment] of the first change"},
+      "last_ts": {"bsonType": ["array", "null"]},
+      "resume_token": {"bsonType": ["string", "null"], "description": "Design A: Extended JSON change stream token"},
+      "gap": {"bsonType": ["object", "null"], "description": "gap blocks: reason, last_seen_ts, resumed_at_ts"},
+      "lag_max": {"bsonType": ["double", "null"]},
+      "lag_mean": {"bsonType": ["double", "null"]},
+      "block_hash": {"bsonType": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256('block:' + header)"}
+    }
+  },
+  "ledger_a.entries": {
+    "$comment": "Sealed entries (ledger/model.py Entry) plus their position. Same shape in ledger_s.entries. Unique index on (block_id, idx).",
+    "bsonType": "object",
+    "required": ["block_id", "idx", "ns", "key", "op", "txn", "source"],
+    "properties": {
+      "block_id": {"bsonType": ["int", "long"]},
+      "idx": {"bsonType": ["int", "long"], "description": "position inside the block; the Merkle root depends on it"},
+      "ns": {"bsonType": "string", "description": "database.collection"},
+      "key": {"bsonType": "string", "description": "canonical Extended JSON of the documentKey"},
+      "op": {"enum": ["insert", "update", "replace", "delete", "baseline", "drop", "rename", "dropDatabase"]},
+      "pre_hash": {"bsonType": ["string", "null"], "description": "64 hex characters, null, or UNAVAILABLE"},
+      "post_hash": {"bsonType": ["string", "null"]},
+      "txn": {"bsonType": "string", "description": "txn:<lsid hash>:<txnNumber>, op:<t>:<i>:<n>, s:<uuid> or baseline"},
+      "source": {"enum": ["A", "S", "B"]},
+      "ts": {"bsonType": ["array", "null"]},
+      "wall": {"bsonType": ["double", "null"], "description": "commit time in epoch seconds"},
+      "head": {"bsonType": ["int", "null"], "description": "Design S only"},
+      "seq": {"bsonType": ["int", "long", "null"]},
+      "prev": {"bsonType": ["string", "null"]},
+      "chain": {"bsonType": ["string", "null"]}
+    }
+  },
+  "ledger_a.meta": {
+    "$comment": "Bookkeeping: {_id: 'start', ts: Timestamp} is where the Design A stream starts after setup.",
+    "bsonType": "object",
+    "required": ["_id"],
+    "properties": {"_id": {"bsonType": "string"}, "ts": {"bsonType": "timestamp"}}
+  },
+  "ledger_s.heads": {
+    "$comment": "Design S chain heads 0 to k minus 1.",
+    "bsonType": "object",
+    "required": ["_id", "seq", "hash"],
+    "properties": {
+      "_id": {"bsonType": "int"},
+      "seq": {"bsonType": ["int", "long"], "description": "sequence number of the newest entry on this head"},
+      "hash": {"bsonType": "string", "pattern": "^[0-9a-f]{64}$", "description": "chain hash of that entry"}
+    }
+  },
+  "ledger_s.pending": {
+    "$comment": "Design S entries committed with their data change but not yet folded into a block. Same fields as entries without block_id and idx. Unique index on (head, seq).",
+    "bsonType": "object",
+    "required": ["ns", "key", "op", "txn", "source", "head", "seq", "prev", "chain"]
+  }
+}
