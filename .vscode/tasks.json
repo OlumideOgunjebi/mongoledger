@@ -1,0 +1,19 @@
+// Tasks (Terminal > Run Task). The same commands are listed in README.md.
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Quick start (containers, setup, demo)", "type": "shell", "command": "bash scripts/quickstart.sh",
+      "windows": { "command": "powershell -ExecutionPolicy Bypass -File scripts/quickstart.ps1" }, "problemMatcher": [] },
+    { "label": "Health check", "type": "shell", "command": "bash scripts/health_check.sh",
+      "windows": { "command": "powershell -ExecutionPolicy Bypass -File scripts/health_check.ps1" }, "problemMatcher": [] },
+    { "label": "Run demo", "type": "shell", "command": "python demo.py", "problemMatcher": [] },
+    { "label": "Unit tests", "type": "shell", "command": "python -m pytest -q tests --ignore=tests/integration",
+      "group": { "kind": "test", "isDefault": true }, "problemMatcher": [] },
+    { "label": "All tests (needs the replica set)", "type": "shell", "command": "python -m pytest -q tests", "problemMatcher": [] },
+    { "label": "Attack: write that bypasses the Design S library", "type": "shell", "command": "python -m attacks.run_attacks bypass && python -m attacks.run_attacks report", "problemMatcher": [] },
+    { "label": "Attack: edit a sealed ledger entry", "type": "shell", "command": "python -m attacks.run_attacks edit-ledger && python -m attacks.run_attacks report", "problemMatcher": [] },
+    { "label": "Build executables (wheel and source archive)", "type": "shell",
+      "command": "python -m pip wheel . -w dist --no-deps",
+      "group": { "kind": "build", "isDefault": true }, "problemMatcher": [] }
+  ]
+}

@@ -1,0 +1,60 @@
+// Run and debug configurations (Run and Debug panel, or F5).
+// Each runs against MONGO_URI, which defaults to the local replica set rs0.
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Demo: two minute walkthrough (demo.py)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/demo.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Setup: images, indexes and baselines (4 heads)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "ledger.cli",
+      "args": ["--collections", "accounts", "setup", "--heads", "4"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Design A: change stream service (5 s blocks)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "ledger.cli",
+      "args": ["--collections", "accounts", "-v", "service", "--interval", "5"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Verify Design A with cross check",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "ledger.cli",
+      "args": ["--collections", "accounts", "verify", "--design", "A", "--cross"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Verify Design S",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "ledger.cli",
+      "args": ["--collections", "accounts", "verify", "--design", "S"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Unit tests (in memory, no server needed)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q", "tests", "--ignore=tests/integration"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

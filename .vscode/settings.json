@@ -1,0 +1,21 @@
+// VS Code project settings for the change stream ledger (COMP.8157, Team # 3).
+// Opening the repository folder (or mongoledger.code-workspace) in VS Code or
+// GitHub Codespaces gives the Testing panel, debug configurations and tasks.
+{
+  "python.defaultInterpreterPath": "python3",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["tests", "-q"],
+  "python.analysis.extraPaths": ["${workspaceFolder}"],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true
+  },
+  "files.associations": {
+    "devcontainer.json": "jsonc",
+    "*.jsonl": "jsonl"
+  },
+  "terminal.integrated.env.linux": {
+    "MONGO_URI": "mongodb://localhost:27017/?replicaSet=rs0&directConnection=true"
+  }
+}

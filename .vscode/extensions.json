@@ -1,0 +1,4 @@
+// Extensions recommended when the project is opened in VS Code.
+{
+  "recommendations": ["ms-python.python", "ms-python.debugpy", "mongodb.mongodb-vscode", "ms-vscode-remote.remote-containers", "ms-mssql.mssql"]
+}
