@@ -1,0 +1,5 @@
+{
+  // VS Code workspace file: File > Open Workspace from File... opens the whole project.
+  "folders": [{ "path": ".", "name": "mongoledger (COMP.8157 Team # 3)" }],
+  "settings": { "python.testing.pytestEnabled": true, "python.testing.pytestArgs": ["tests", "-q"] }
+}

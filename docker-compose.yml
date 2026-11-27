@@ -1,0 +1,60 @@
+# ============================================================================
+# COMP.8157 Advanced Database Topics, Fall 2026, University of Windsor
+# Team # 3: A Change Stream Ledger for MongoDB
+# Repository: github.com/OlumideOgunjebi/mongoledger
+# File:    docker-compose.yml
+# Owner:   Yadu Pratap (deployment lead)
+# Purpose: MongoDB 8.0 replica set rs0, SQL Server 2022 and the application
+#          container
+# Covers:  NFR09, NFR12 (see docs/D.4.1)
+# ============================================================================
+
+# MongoDB 8.0 as a single node replica set (change streams and transactions need a
+# replica set) and SQL Server 2022 Developer edition for the native ledger baseline.
+#
+#   docker compose up -d            start both
+#   docker compose up -d mongo      MongoDB only
+#
+# Copy .env.example to .env first and set MSSQL_SA_PASSWORD.
+# OPLOG_MB controls the oplog size; 990 is the minimum MongoDB allows and is used
+# for the oplog rollover attack.
+
+services:
+  mongo:
+    image: mongo:8.0
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017", "--oplogSize", "${OPLOG_MB:-2048}"]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./backups:/backups
+    cpus: ${MONGO_CPUS:-2}
+    mem_limit: ${MONGO_MEM:-4g}
+    healthcheck:
+      # initiates the replica set on first start; healthy only once this node is PRIMARY
+      test: >
+        mongosh --quiet --eval "try { quit(rs.status().myState === 1 ? 0 : 1) } catch (e) {
+        rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]}); quit(1) }"
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 5s
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64   # no arm64 image; Apple Silicon runs it under Rosetta emulation
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?set MSSQL_SA_PASSWORD in .env}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+      - ./backups:/backups
+    cpus: ${MSSQL_CPUS:-2}
+    mem_limit: ${MSSQL_MEM:-4g}
+
+volumes:
+  mongo_data:
+  mssql_data:

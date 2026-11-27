@@ -1,0 +1,5 @@
+pymongo>=4.8
+matplotlib>=3.8
+pytest>=8
+# SQL Server baseline only (needs the Microsoft ODBC Driver 18 for SQL Server)
+pyodbc>=5.1
