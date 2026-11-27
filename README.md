@@ -236,8 +236,9 @@ demo.py            two minute end to end demonstration
 | Rohith Nelluri | ledger core, Design S, SQL Server baseline | `ledger/` core, `ledger/design_s.py`, `sqlserver/` |
 | Yadu Pratap | Design A service, workloads, analysis | `ledger/design_a.py`, `workloads/`, `bench/`, `ycsb/` |
 
-Work is tracked in Hive in two week sprints. Every change goes through a pull request that another
-member reviews, and the CI workflow must pass before merging.
+Work is tracked in Hive. Each component was committed separately, with a message that names its
+owner and the requirements it implements, and the CI workflow tests every push. The main branch is
+protected, so later changes go through a pull request that another member approves.
 
 ## Known limits
 

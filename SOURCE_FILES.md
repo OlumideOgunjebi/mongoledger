@@ -11,7 +11,7 @@ Requirement numbers (FR, NFR, AC) refer to `docs/D.4.1 User Requirements and Ana
 |---|---|---|---|
 | `.env.example` | Pratap | template for the local .env file (placeholder password only) | 511 bytes |
 | `.gitignore` | Pratap | keeps .env, caches, raw results and digest logs out of Git | 84 bytes |
-| `README.md` | All | project portal: links, quick start, commands, layout and ownership | 251 |
+| `README.md` | All | project portal: links, quick start, commands, layout and ownership | 252 |
 | `SOURCE_FILES.md` | All | this list of every file in the repository | 186 |
 | `demo.py` | Ogunjebi | two minute live demonstration: clean run, verification and three attacks | 144 |
 | `docker-compose.yml` | Pratap | MongoDB 8.0 replica set rs0, SQL Server 2022 and the application container | 60 |
@@ -158,13 +158,13 @@ Requirement numbers (FR, NFR, AC) refer to `docs/D.4.1 User Requirements and Ana
 | `docs/D.4.1 User Requirements and Analysis.pdf` | All | project document D.4.1 User Requirements and Analysis | 231,332 bytes |
 | `docs/D.4.2 Design Document.docx` | All | project document D.4.2 Design Document | 1,150,905 bytes |
 | `docs/D.4.2 Design Document.pdf` | All | project document D.4.2 Design Document | 927,418 bytes |
-| `docs/D.4.3 Project Full Application, Team 3.docx` | All | project document D.4.3 Project Full Application, Team 3 | 21,729 bytes |
-| `docs/D.4.3 Project Full Application, Team 3.pdf` | All | project document D.4.3 Project Full Application, Team 3 | 181,784 bytes |
-| `docs/D.4.4 Deployment Document.docx` | All | project document D.4.4 Deployment Document | 20,473 bytes |
-| `docs/D.4.4 Deployment Document.pdf` | All | project document D.4.4 Deployment Document | 151,294 bytes |
+| `docs/D.4.3 Project Full Application, Team 3.docx` | All | project document D.4.3 Project Full Application, Team 3 | 21,783 bytes |
+| `docs/D.4.3 Project Full Application, Team 3.pdf` | All | project document D.4.3 Project Full Application, Team 3 | 181,916 bytes |
+| `docs/D.4.4 Deployment Document.docx` | All | project document D.4.4 Deployment Document | 20,507 bytes |
+| `docs/D.4.4 Deployment Document.pdf` | All | project document D.4.4 Deployment Document | 151,471 bytes |
 | `docs/D.4.5 User Guide.docx` | All | project document D.4.5 User Guide | 19,818 bytes |
 | `docs/D.4.5 User Guide.pdf` | All | project document D.4.5 User Guide | 137,814 bytes |
-| `docs/PROJECT_MANAGEMENT.md` | Ogunjebi | project management: Hive link, task breakdown, schedule, risks, workflow | 97 |
+| `docs/PROJECT_MANAGEMENT.md` | Ogunjebi | project management: Hive link, task breakdown, schedule, risks, workflow | 98 |
 | `docs/architecture_wide.png` | All | figure used in the D.4 documents | 160,603 bytes |
 | `docs/block_structure.png` | All | figure used in the D.4 documents | 302,399 bytes |
 | `docs/data_flow.png` | All | figure used in the D.4 documents | 170,992 bytes |
