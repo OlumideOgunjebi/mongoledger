@@ -11,7 +11,7 @@ Requirement numbers (FR, NFR, AC) refer to `docs/D.4.1 User Requirements and Ana
 |---|---|---|---|
 | `.env.example` | Pratap | template for the local .env file (placeholder password only) | 511 bytes |
 | `.gitignore` | Pratap | keeps .env, caches, raw results and digest logs out of Git | 84 bytes |
-| `README.md` | All | project portal: links, quick start, commands, layout and ownership | 252 |
+| `README.md` | All | project portal: links, quick start, commands, layout and ownership | 253 |
 | `SOURCE_FILES.md` | All | this list of every file in the repository | 186 |
 | `demo.py` | Ogunjebi | two minute live demonstration: clean run, verification and three attacks | 144 |
 | `docker-compose.yml` | Pratap | MongoDB 8.0 replica set rs0, SQL Server 2022 and the application container | 60 |
@@ -164,6 +164,8 @@ Requirement numbers (FR, NFR, AC) refer to `docs/D.4.1 User Requirements and Ana
 | `docs/D.4.4 Deployment Document.pdf` | All | project document D.4.4 Deployment Document | 151,471 bytes |
 | `docs/D.4.5 User Guide.docx` | All | project document D.4.5 User Guide | 19,818 bytes |
 | `docs/D.4.5 User Guide.pdf` | All | project document D.4.5 User Guide | 137,814 bytes |
+| `docs/D.5 Final Project Report, Team 3.docx` | All | project document D.5 Final Project Report, Team 3 | 698,085 bytes |
+| `docs/D.5 Final Project Report, Team 3.pdf` | All | project document D.5 Final Project Report, Team 3 | 709,539 bytes |
 | `docs/PROJECT_MANAGEMENT.md` | Ogunjebi | project management: Hive link, task breakdown, schedule, risks, workflow | 98 |
 | `docs/architecture_wide.png` | All | figure used in the D.4 documents | 160,603 bytes |
 | `docs/block_structure.png` | All | figure used in the D.4 documents | 302,399 bytes |
