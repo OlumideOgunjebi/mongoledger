@@ -16,7 +16,7 @@ Team: Olumide Ogunjebi, Rohith Nelluri, Yadu Pratap.
 
 ![Architecture](docs/architecture_wide.png)
 
-## Project documents (D.3 and D.4)
+## Project documents (D.3, D.4 and D.5)
 
 | Deliverable | Where |
 |---|---|
@@ -27,6 +27,7 @@ Team: Olumide Ogunjebi, Rohith Nelluri, Yadu Pratap.
 | D.4.3 submission document | `docs/D.4.3 Project Full Application, Team 3.pdf` (and `.docx`) |
 | D.4.4 Deployment | `docs/D.4.4 Deployment Document.pdf` (and `.docx`) |
 | D.4.5 User Guide | `docs/D.4.5 User Guide.pdf` (and `.docx`) |
+| D.5 Final Project Report | `docs/D.5 Final Project Report, Team 3.pdf` (and `.docx`) |
 
 ## What the code does
 
